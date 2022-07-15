@@ -1,4 +1,4 @@
-# GIT TUTORIAL
+# 😄GIT TUTORIAL😄
 
 ## git init
 ___
@@ -11,7 +11,7 @@ ___
 ## git commit
 ___
 * repository에 버전 기록하기
-* -m옵션으로 메시지 입력
+* `-m`옵션으로 메시지 입력
 
 
 ## git log
@@ -25,7 +25,7 @@ ___
 ## git push
 ___
 * 원격 저장소에 로컬 저장소 내용 update하기
-* 처음 push할 때 -u origin master 를 통해 원격 저장소의 master 브랜치와 연결이 필요함  
+* ❗처음 push할 때 ```-u origin master``` 를 통해 원격 저장소의 master 브랜치와 연결이 필요함❗
 
 ## git clone 
 ___
