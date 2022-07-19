@@ -7,3 +7,4 @@
 * [07.16\(SPRING\)](./Spring)
 * [07.17\(SPRING\)](./Spring)
 * [07.18\(PYTHON\)](./PYTHON/파이썬.md)
+* [07.19\(JUPYTERNOTEBOOK\)](./PYTHON/JupyterNotebook.md)
