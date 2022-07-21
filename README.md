@@ -3,10 +3,10 @@
    
 ## 🏄 22.07
 ---
-* [07.15\(GIT TUTORIAL\)](./Git/GIT_TUTORIAL)
-* [07.16\(SPRING\)](./Spring)
-* [07.17\(SPRING\)](./Spring)
-* [07.18\(PYTHON\)](./PYTHON/파이썬.md)
-* [07.19\(JUPYTERNOTEBOOK\)](./PYTHON/JupyterNotebook.md)
-* [07.20\(PYTHON\)](./PYTHON/파이썬.md)
-* [07.21\(SPRING\)](./Spring)
+* 07.15  [\(GIT TUTORIAL\)](./Git/GIT_TUTORIAL)
+* 07.16  [\(SPRING\)](./Spring)
+* 07.17  [\(SPRING\)](./Spring)
+* 07.18  [\(PYTHON\)](./PYTHON/파이썬.md)
+* 07.19  [\(JUPYTERNOTEBOOK\)](./PYTHON/JupyterNotebook.md)
+* 07.20  [\(PYTHON\)](./PYTHON/파이썬.md)
+* 07.21  [\(SPRING\)](./Spring)  [\(PYTHON\)](./PYTHON/파이썬.md)
