@@ -12,3 +12,4 @@
 * 07.21  [\(SPRING\)](./Spring)  [\(PYTHON\)](./PYTHON/파이썬.md)
 * 07.22  [\(SPRING\)](./Spring)
 * 07.31  [\(SPRING\)](./Spring)
+* 08.01  [\(HTML,CSS)](./Web/HTML,CSS.md)
