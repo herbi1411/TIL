@@ -1,6 +1,7 @@
 # HTML / CSS
 
-## 웹사이트
+# 웹사이트
+
 ---
 
 - 브라우저를 통해 접속하는 웹페이지(문서)들의 모음
@@ -89,7 +90,7 @@
 
 - 태그안에 쓰는 것 (ex. href)
 - 태그마다 사용할 수 있는 속성이 다르다.
-- 속성을 사용할 때는 공백을 넣으면 안된다. (ex <a href=”https://www.naver.com”/>)
+- 속성을 사용할 때는 공백을 넣으면 안된다. (ex \<a href=”https://www.naver.com”/\>)
 - global attribute
     - id : 문서 전체에서 유일한 고유 식별자 지정
     - class: 공백으로 구분된 해당 요소의 클래스 목록(CSS, JS에서 요소를 선택하거나 접근)
@@ -219,3 +220,121 @@
     - 고정위치 → Viewport 기준의 위치
 - sticky
     - fixed 였다가 Relative로 바뀜
+
+---
+
+---
+
+---
+
+## CSS Layout techniques
+
+---
+
+- display
+- position
+- float
+- flexbox
+- grid
+
+## float
+
+---
+
+- 요즘은 잘 안쓰임
+
+## Flex box
+
+---
+
+- IE에서는 지원 제대로 안됨
+- 축
+    - main axis : 컨텐츠가 쌓이는 방향
+    - cross axis: 반대 방향
+- 구성요소
+    - Flex Container (부모 요소)
+    - Flex Item (자식 요소)
+- 배치설정
+    - flex-direction
+    - flex-wrap
+- 공간 나누기
+    - justify-content (main axis)
+    - align-content (cross axis)
+- 정렬
+    - align-items(모든 아이템을 cross axis 기준으로)
+    - align-self (개별 아이템)
+    
+
+## BootStrap
+
+---
+
+- CSS 스타일, 템플릿을 미리 지정해서 사용할 수 있게 해줌
+- 모든 CSS설정이 important로 돼있어서 사용자가 고쳐쓸 수 없음
+- class 가져다 쓸 때 bootstrap에 정의된 이름이랑 안겹치게 주의해야함⚠️
+
+## BootStrap 사용 방법
+
+---
+
+- Spacing
+    - `{property}{sides}-{size}`
+        - ex) class가  mt-3 → margin top 3
+        - size는 0~5까지 있음 (1 → 0.25rem)
+- 자주 쓰이는 클래스
+
+```html
+<h2>Spacing</h2>
+  <div class="mt-3 ms-5 box">margin top3 ms-5</div>
+  <div class="m-4 box">margin 4</div>
+  <div class="mx-auto box">가운데정렬</div>
+  <div class="ms-auto box">ms-auto 오른쪽 정렬</div>
+  
+  <hr>
+  
+  <h2>Color</h2>
+  <div class="bg-primary">이건 파랑</div>
+  <div class="bg-secondary">이건 회색</div>
+  <div class="bg-danger">이건 빨강</div>
+  <div class="text-success">이건 초록색</div>
+  <div class="text-danger">이건 빨강</div>
+
+  <hr>
+
+  <p class="text-start">text-start</p>
+  <p class="text-center">text-center</p>
+  <p class="text-end">text-end</p>
+  <a href="#" class="text-decoration-none text-dark">None-Underline-Link</a>
+  <p class="fw-bold">Bold text</p>
+  <p class="fw-normal">Normal Weight text</p>
+  <p class="fst-italic">Italic Text</p>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  
+  <hr>
+  <h2>Position</h2>
+  <div class="box fixed-top">fixed-top</div>
+  <div class="box fixed-bottom">fixed-bottom</div>
+  <div class="bigbox position-relative">
+    <div class="box position-absolute top-0 start-0">top 0 and start 0</div>
+    <div class="box position-absolute top-0 end-0">top 0 and end 0</div>
+    <div class="box position-absolute bottom-0 start-0">bottom 0 and start 0</div>
+    <div class="box position-absolute bottom-0 end-0">bottom 0 and end 0</div>
+  </div>
+  <hr>
+  <h2>Display</h2>
+  <div class="d-inline p-2 text-bg-primary">d-inline</div>
+  <div class="d-inline p-2 text-bg-dark">d-inline</div>
+  <div class="d-none p-2 text-bg-dark">d-none</div>
+  <div class="box bg-warning d-sm-none d-md block">보이냐? 안보이냐??</div>
+  <div class="box bg-success d-md-none d-xl block">보이냐? 안보이냐??</div>
+```
+
+## Grid 시스템
+
+---
+
+- 반응형 웹을 만들기 위한 디자인
+- 기본 요소
+    - Column: 실제 컨텐츠를 포함하는 부분
+    - Gutter: 컬럼과 컬럼 사이의 공간(간격)
+    - Container: Column들을 담고 있는 공간
