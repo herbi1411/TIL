@@ -22,3 +22,4 @@
 - 08.03 [\(HTML,CSS)](./Web/HTML,CSS.md)
 - 08.06 [\(SPRING\)](./Spring)
 - 08.08 [\(알고리즘\)](./algorithm/알고리즘수업.md) [\(SPRING\)](./Spring)
+- 08.31 [\(Django\)](./Django/README.md)
