@@ -225,3 +225,35 @@ ex) Article.objects.all()
 ### 참고
 
 - `__str__()` 메서드를 모델 클래스에 오버라이딩하면 변수를 출력할 때 어떻게 출력될 지 지정할 수 있음
+
+## CSRF 공격
+
+---
+
+- 사용자가 자신의 의지와 무관하게 공격자가 의도한 행위(수정, 삭제)를 웹사이트에 요청하게하는 공격
+- 2008년 옥션 사례
+    - 이미지 크기가 0으로 하고, src에 관리자 계정의 비밀번호를 바꾸는 링크를 넣음(url의 query를통해)
+
+## CSRF 방어수단
+
+---
+
+- 사용자에게 hash토큰을 발급해서 매번 검증함
+
+## URL 태그를 사용해서 `variable routing` 하고 연결하기
+
+---
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/58a68e48-9f6e-4bda-8976-fdd684281ac3/Untitled.png)
+
+한칸 띄우고 쓰면 됨
+
+## Admin
+
+---
+
+`python [manage.py](http://manage.py/) createsuperuser` 으로 관리자계정 생성
+
+이후 admin 로그인 가능
+
+`admin.site.register(Article)` 으로 DB 등록
