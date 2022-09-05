@@ -257,3 +257,16 @@ ex) Article.objects.all()
 이후 admin 로그인 가능
 
 `admin.site.register(Article)` 으로 DB 등록
+
+db 보여질 필드 정하기
+
+```python
+from django.contrib import admin
+from .models import Article
+# Register your models here.
+
+class article_display(admin.ModelAdmin):
+    list_display = ('pk','title','content','created_at', 'updated_at') # admin에서 보여줄 field
+    list_display_links = list_display # admin에서 누르면 수정/삭제가 가능하게할 필드 목록
+admin.site.register(Article, article_display)
+```
