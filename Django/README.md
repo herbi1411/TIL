@@ -270,3 +270,110 @@ class article_display(admin.ModelAdmin):
     list_display_links = list_display # admin에서 누르면 수정/삭제가 가능하게할 필드 목록
 admin.site.register(Article, article_display)
 ```
+
+## Django Form
+
+---
+
+- 지금까지는 `HTML FORM` 으로 온 모든 요청을 받았는데, 요청중에는 형식에 맞지 않거나 공격도 있음
+- Django Form을 통해 유효성 검사를 단순하고 자동화 할 수 있는 기능 제공
+- Django는 Form에 관련한 작업의 세 부분을 처리
+    - 렌더링을 위한 데이터 준비 및 재구성
+    - 데이터에 대한 HTML forms 생성
+    - 클라이언트로부터 받은 데이터 수신 및 처리
+
+## Django From 사용법
+
+---
+
+- Form 클래스를 선언함 (Model과 마찬가지로 상속관계를 통해 선언)
+    - 클래스 안에 필드들을 선언(Model과 방식 동일)
+    - forms에서는 charfield의 `max_length` 속성이 필수❌
+    - forms에서는 `textfield`가 없음
+    - `choice field`를 통해 선택하는 창을 만들 수 있음
+        
+        ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e314a722-bc2d-4340-8612-f7cb6f4d5c14/Untitled.png)
+        
+- View에서 Context에 클래스 넣어줌
+- HTML에 form 사용
+    - `as_p` 쓰면 각 필드가  p로 감싸져서 렌더링
+- widget 속성을 통해 html에 textarea로 표시 가능
+
+## Model Form
+
+---
+
+- Form을 Model과 연결
+- Model Form 안의 meta클래스에서 정보 기입
+    - `model` : 사용할 모델
+    - `fields` : 사용할 필드 `__all__` 을 통해 모든 필드 가져올 수 있음
+    - `exclude` : 뺄 필드 정함
+
+## Model Form을 통한 데이터 저장, 수정
+
+---
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/702dd9fb-86f2-41b9-8de4-34d9c755fc42/Untitled.png)
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e15cca6b-5471-42bd-86ac-60ebab467337/Untitled.png)
+
+## Widget을 통한 데이터 입력
+
+---
+
+- Widget은 데이터유효성 검사와 관련❌
+    
+    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/cfbf5dfe-d5a7-46df-85c9-850a369f0107/Untitled.png)
+    
+
+## HTTP Method에 따라서 (NEW, CREATE) 합치기
+
+---
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9059a884-265f-44a6-ae4f-75ab76865929/Untitled.png)
+
+## HTTP Method에 따라서 (EDIT, UPDATE) 합치기
+
+---
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/47e6c940-d22f-463c-967f-763ec4812580/Untitled.png)
+
+## Detail 페이지 template does not found → 404
+
+---
+
+```python
+from django.shortcuts import render, redirect, get_object_or_404
+movie = get_object_or_404(Movies, pk=pk)
+```
+
+## 데코레이터(Decorator)
+
+---
+
+- 기존에 작성된 함수에 기능을 추가하고 싶을 때, 해당 함수를 수정하지 않고, 기능을 추가해주는 함수
+- get만 허용
+    
+    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/25f753b7-f857-48ee-91e8-418149ea9c73/Untitled.png)
+    
+    - 이렇게하면 GET만 됨, 다른 method는 `405(Not Allowed)` 에러
+    - `require_get` 도 있지만 `require_safe` 권장
+- post만 허용
+    
+    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9e7bcbec-aa83-4dde-8bb9-3e0675332dd5/Untitled.png)
+    
+- 여러 메서드 허용하는 방법
+    
+    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/84b6a95b-ac3a-4f63-96ce-9d9795b85875/Untitled.png)
+    
+
+## 사용자 인증
+
+---
+
+`Authentication(인증)` : 신원 확인, 사용자 자신이 누구인지 확인하는 것
+
+`Authorization(권한, 허가)` : 권한부여, 인증된 사용자가 수행할 수 있는 작업을 결정
+
+- accounts앱 생성
+- Django에서 기본으로 제공하는 `abstractUser` 를 상속받아서 사용
