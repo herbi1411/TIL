@@ -377,3 +377,175 @@ movie = get_object_or_404(Movies, pk=pk)
 
 - accounts앱 생성
 - Django에서 기본으로 제공하는 `abstractUser` 를 상속받아서 사용
+- User설정할때는 프로젝트 초기에 해야함!! (도중에 하면 DB 초기화해야함(의존 관계 생기기 때문에))
+- 
+
+## 상속받아서 CustomUser 만들기
+
+---
+
+```python
+# accounts.models.py
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+
+# Create your models here.
+class User(AbstractUser):
+    pass
+```
+
+```python
+# settings.py
+AUTH_USER_MODEL = 'accounts.User' 
+```
+
+```python
+# accounts.admin.py
+
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from .models import User
+# Register your models here.
+
+admin.site.register(User, UserAdmin)
+```
+
+## 장고에서 제공하는 사용자인증 폼
+
+---
+
+AuthenticationForm - 로그인을 위한 built-in-form
+
+- `{{user}}` 는 settings.py의 `context_processors`에 정의돼있어서 어디서든지 쓸  수 있음
+
+로그인
+
+```python
+from django.shortcuts import render, redirect
+from django.views.decorators.http import require_safe, require_http_methods, require_POST
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login as auth_login
+# Create your views here.
+
+@require_http_methods(['GET', 'POST'])
+def login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, request.POST)
+        if form.is_valid():
+                #로그인
+                auth_login(request, form.get_user())
+                return redirect('articles:index')
+    else:
+        form = AuthenticationForm()
+    context = {
+        'form' : form,
+    }
+    return render(request, "accounts/login.html", context)
+```
+
+로그아웃
+
+```python
+@require_POST
+def logout(request):
+    #로그아웃
+    auth_logout(request);
+    return redirect('articles:index')
+```
+
+회원가입
+
+```python
+@require_http_methods(['GET', 'POST'])
+def signup(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            auth_login(request, user)
+            return redirect('articles:index')
+    else:
+        form = CustomUserCreationForm()
+    context = {
+        'form' : form,
+    }
+    return render(request, 'accounts/signup.html', context)
+```
+
+회원탈퇴
+
+```python
+@require_POST
+def delete(request):
+    request.user.delete()
+    auth_logout(request.user)
+    return redirect('articles:index')
+```
+
+회원정보수정
+
+```python
+@require_http_methods(['GET', 'POST'])
+def update(request):
+    if request.method == 'POST':
+        form = CustomUserChangeForm(request.POST, instance = request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('articles:index')
+    else:
+        form = CustomUserChangeForm(instance = request.user)
+    context = {
+        'form' : form,
+    }
+    return render(request, 'accounts/update.html', context)
+```
+
+비밀번호변경
+
+```python
+@require_http_methods(['GET', 'POST'])
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            return redirect("articles:index")
+    else:
+        form = PasswordChangeForm(request.user)
+    context = {
+        "form" : form,
+    }
+    return render(request, "accounts/change_password.html", context)
+```
+
+- 비밀번호 변경하면 기본적으로 세션 끊어짐 (`update_session_auth_hash` 를 통해 세션 갱신)
+
+## Create User Form 사용할 때 Model 오버라이딩하기
+
+---
+
+```python
+# accounts/forms.py
+
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import get_user_model
+
+class CustomUserCreationForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = get_user_model() 
+
+class CustomUserChangeForm(UserChangeForm):
+    class Meta(UserChangeForm.Meta):
+        model = get_user_model()
+```
+
+## User가 유효한지 확인
+
+---
+
+1. is_authenticated
+    - 사용자가 인증되었는 지 여부 획인
+    - 권환(permission)과는 관련 없고, 사용자가 활성화 상태(activate)이거나 유효한 세션(valid session)을 가지고 있는 지 조차 확인 안함
+    
+2. decorators
