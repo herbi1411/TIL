@@ -1,5 +1,3 @@
-# DataBase
-
 ## SQL
 
 ---
@@ -119,3 +117,14 @@ ALTER TABLE A DROP COLUMN col_c; // 열 삭제
 - 쿼리에서 반환되는 행 수를 제한
 - SELECT 문에 선택적으로 사용할 수 있는 절
 - `OFFSET` 을 같이 사용하면 지정한 OFFSET부터 LIMIT 수만큼 데이터를 가져옴
+
+## SQLite3 csv 파일 읽어오기
+
+---
+
+```bash
+sqlite3 <dbname>
+
+.mode csv
+.import <csvname> <tablename>
+```
