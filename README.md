@@ -33,4 +33,5 @@
 - 09.07 [\(Django\)](./Django/README.md) [\(C++\)](./C%2B%2B/README.md)
 
 ## 🎡 22.10
-- 10.04 [\(DB\)](DB/DATABASE.MD)
+- 10.04 [\(DB\)](DB/SQL.MD)
+- 10.11 [\(Django\)](./Django/README.md) [\(DB\)](Django/DJANGODB.md)

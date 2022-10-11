@@ -549,3 +549,305 @@ class CustomUserChangeForm(UserChangeForm):
     - 권환(permission)과는 관련 없고, 사용자가 활성화 상태(activate)이거나 유효한 세션(valid session)을 가지고 있는 지 조차 확인 안함
     
 2. decorators
+    
+    ```python
+    from django.contrib.auth.decorators import login_required
+    
+    @login_required #로그인이 돼있어야만 메서드 실행 (안돼있으면 로그인페이지로)
+    @require_POST
+    def logout(request):
+    	####
+    
+    @login_required
+    @require_POST
+    def delete(request):
+    	###
+    
+    @login_required
+    @require_http_methods(['GET', 'POST'])
+    def update(request):
+    	###
+    
+    @login_required
+    @require_http_methods(['GET', 'POST'])
+    def change_password(request):
+    	###
+    
+    ```
+    
+
+## Static File
+
+---
+
+- 응답할 때 별도의 처리 없이 내용을 그대로 보여주면 되는 파일
+    - 사용자의 요청에 따라 바뀌는 것이 아님
+- `파일 자체가 고정` , 서비스 중에도 변경X
+- ex) css, image, js
+
+## Media File
+
+---
+
+- static file에 속하는 파일
+- 사용자가 업로드 하는 파일 (user-uploaded)
+- 유저가 업로드 한 모든 정적 파일
+
+## Static File 구성 방법
+
+---
+
+1. `INSTALLED_APPS`  에 `django.contrib.staticfiles` 가 포함되어 있는지 확인
+2. `[settings.py](http://settings.py)` 에 `STATIC_URL` 정의 하기
+3. 앱의 static 폴더에 정적 파일을 위치하기
+예시) my_app/static/sampe_img.jpg
+4. 탬플릿에서 static 탬플릿 태그를 사용하여 지정된 경로에 있는 정적 파일의 URL 만들기
+    
+    ```html
+    {% load static %}
+    
+    <img src="{% static 'sample_img.jpg' %}" alt="sample image">
+    ```
+    
+
+`STATIC_ROOT` 
+
+- django 프로젝트에서 사용하는 모든 정적 파일을 한곳에 모아 넣는 경로
+- 개발과정에서 [settings.py](http://settings.py)의 DEBUG 값이 True면 해당 값은 작동X
+- 배포할 때는 `collectstatic` 명령어를 통해 장고에 필요한 모든 정적파일을 폴더에 만들어줌
+
+`STATICFILES_DIRS`
+
+- 기본 정적파일 경로 외에 추가적인 정적 파일 경로 목록을 정의
+
+## Media 파일 구성 방법
+
+---
+
+1. [settings.py](http://settings.py)에 MEDIA_URL , MEDIA_ROOT 지정
+    
+    ```python
+    MEDIA_ROOT = BASE_DIR / 'media'
+    MEDIA_URL = '/media/'
+    ```
+    
+2. 프로젝트 urls.py에 url추가 (static과 다르게 media는 url을 자동으로 연결해주지 않음)
+    
+    ```python
+    from django.conf import settings
+    from django.conf.urls.static import static
+    
+    urlpatterns = [
+        path('admin/', admin.site.urls),
+        path('articles/', include('articles.urls')),
+        path('accounts/', include('accounts.urls')),
+    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    ```
+    
+3. models.py의 모델에 이미지 필드 추가
+    
+    ```python
+    class Article(models.Model):
+        user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+        title = models.CharField(max_length=10)
+        content = models.TextField()
+        image = models.ImageField(blank=True)
+        created_at = models.DateTimeField(auto_now_add=True)
+        updated_at = models.DateTimeField(auto_now=True)
+    
+        def __str__(self):
+            return self.title
+    ```
+    
+4. pillow 라이브러리 설치
+    
+    `pip install pillow`
+    
+5. migrate 진행
+6. 이후 form에서 이미지를 전송해야하면 다음 태그를 붙여서 내야함
+(create.html)
+    
+    ```html
+    {% extends 'base.html' %}
+    
+    {% block content %}
+      <h1>CREATE</h1>
+      <form action="" method="POST" enctype="multipart/form-data"> <!-- enctype 지정 -->
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit">
+      </form>
+      <hr>
+      <a href="{% url 'articles:index' %}">[back]</a>
+    {% endblock content %}
+    ```
+    
+7. form 데이터를 받을때 `request.FILES` 추가
+(views.py의 create 메서드)
+    
+    ```python
+    @login_required
+    @require_http_methods(['GET', 'POST'])
+    def create(request):
+        if request.method == 'POST':
+            form = ArticleForm(request.POST, request.FILES) # FILES에 이미지 있음
+            if form.is_valid():
+                article = form.save(commit=False)
+                article.user = request.user
+                article.save()
+                return redirect('articles:detail', article.pk)
+        else:
+            form = ArticleForm()
+        context = {
+            'form': form,
+        }
+        return render(request, 'articles/create.html', context)
+    ```
+    
+
+`MEDIA_URL`
+
+- 미디어 파일을 접근할 url 경로
+
+`MEDIA_ROOT`
+
+- 이미지 파일이 실제 저장될 root 경로
+- 앱이 아니라 프로젝트 수준으로 저장됨
+- STATIC_ROOT 와 반드시 다른 경로로 해야함
+
+`ImageField` 
+
+- 이미지 업로드에 사용되는 필드
+- `Filefield`를 상속
+- 업로드 된 객체가 유효한 이미지인지 검사
+- 최대 길이가 100인 문자열로 DB에 저장, `max_length` 로 길이 조정 가능
+- blank 속성 : True인 경우 필드를 비워둘 수 있음(이럴경우 빈 문자열 저장, ❗NULL아님❗)
+- NULL 대신 blank를 넣는 이유 : 문자열 속성의 빈 값은 문자열 blank여야 하므로 (다른 속성의 빈 값은 NULL)
+    
+    
+
+`FileField`
+
+- 파일 업로드에 사용되는 모델
+- `upload_to` : 파일이 저장될 저장소를 지정
+- 최종적으로 MEDIA_ROOT / path 로 저장됨
+
+참고)
+
+
+- data, files 순으로 속성이 있기 때문에 인자 이름을 안써도 됨 (instance는 써야함!)
+
+## 업로드 하는 이미지 파일 이름이 겹칠때
+
+---
+
+- django에서 알아서 이미지 뒤에 난수값 생성해서 저장함
+
+## 이미지 업데이트
+
+---
+
+- 기본적으로 이미지는 수정이 아니라 삭제하고 새로 추가하는 개념
+- 이미지를 바꾸면 db는 url이 변경되지만 실제 파일은 삭제되지 않음, 다른 라이브러리를 사용해서 바꿔야 함
+
+## upload_to 속성
+
+---
+
+1. 문자열로 지정
+    - 사용법: `image = models.ImageField(blank=True, upload_to="images/")`
+    - `strftime()` 형식으로 지정 가능
+        - 예시: `image = models.ImageField(blank=True, upload_to="images/%Y/%m/%d/")`
+        
+2. 함수로 지정
+    - 사용법: 함수 지정
+    
+    ```python
+    def articles_image_path(instance, filename): # 반드시 이 2개의 변수 사용, 함수 이름은 상관無
+        return f'images/{instance.user.username}/{filename}'
+    
+    class Article(models.Model):
+        # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+        # title = models.CharField(max_length=10)
+        # content = models.TextField()
+        image = models.ImageField(blank=True, upload_to=articles_image_path)
+        # created_at = models.DateTimeField(auto_now_add=True)
+        # updated_at = models.DateTimeField(auto_now=True)
+    ```
+    
+
+## Image Resizing
+
+---
+
+- 원본 사진을 서버에서 매번 주는 것은 부담
+- 라이브러리를 통해 이미지를 줄일 수 있음 (`django-imagekit`)
+    
+    → 썸네일, 해상도, 사이즈, 색깔 등을 조정할 수 있음
+    
+
+사용방법
+
+1. `pip install django-imagekit`
+2.  [settings.py](http://settings.py) `INSTALLED_APPS` 에 imagekit 등록 
+3. models.py에 라이브러리 임포트, model 사용
+    
+    case1: 원본이미지 저장X
+    
+    ```python
+    # from django.db import models
+    # from django.conf import settings
+    from imagekit.processors import Thumbnail
+    from imagekit.models import ProcessedImageField
+    #
+    # def articles_image_path(instance, filename): # 반드시 이 2개의 변수 사용
+    #    return f'images/{instance.user.username}/{filename}'
+    #
+    # Create your models here.
+    class Article(models.Model):
+    #    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    #    title = models.CharField(max_length=10)
+    #    content = models.TextField()
+        image = ProcessedImageField(
+            blank = True,
+            upload_to = 'thumbnails/',
+            processors=[Thumbnail(200, 300)],
+            format='JPEG',
+            options={'quality' : 80 },
+        )
+    #    created_at = models.DateTimeField(auto_now_add=True)
+    #    updated_at = models.DateTimeField(auto_now=True)
+    #
+    #    def __str__(self):
+    #        return self.title
+    ```
+    
+    case2: 원본이미지 저장O (url 호출할 때 이미지 생성, `CACHE` 에 저장됨)
+    
+    ```python
+    # from django.db import models
+    # from django.conf import settings
+    from imagekit.processors import Thumbnail
+    from imagekit.models import ProcessedImageField, ImageSpecField
+    #
+    # def articles_image_path(instance, filename): # 반드시 이 2개의 변수 사용
+    #    return f'images/{instance.user.username}/{filename}'
+    #
+    # Create your models here.
+    class Article(models.Model):
+    #     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    #     title = models.CharField(max_length=10)
+    #     content = models.TextField()
+        image = models.ImageField(blank=True)
+        image_thumbnail = ImageSpecField(
+            source='image',
+            processors=[Thumbnail(200, 300)],
+            format='JPEG',
+            options={'quality' : 80 },
+        )
+    #     created_at = models.DateTimeField(auto_now_add=True)
+    #     updated_at = models.DateTimeField(auto_now=True)
+    #
+    #    def __str__(self):
+    #        return self.title
+    ```

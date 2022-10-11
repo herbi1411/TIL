@@ -273,3 +273,72 @@ pip install isort
 
 isort [filename.py]
 ```
+## QuerySet 사용 심화
+
+---
+
+- 내림차순 정렬하기: `User.objects.oreder_by('-age')`
+- 랜덤정렬하기: `User.objects.oreder_by('?')`
+- 특정 필드만 가져오기 : `User.objects.oreder_by('age').values('first_name', 'age)`
+- 여러기준으로 정렬하기: `User.objects.order_by('age', '-balance')` (order_by를 연속으로 쓰는것이 아님⚠️)
+- 중복 없이 조회하기: `User.objects.distinct().values('country')`
+- 오름차순 정렬하고 중복없이 모든 지역 조회하기:  `User.objects.distinct().values('country').order_by('country')`
+- 나이가 30인 사람의 이름 조회: `User.objects.filter(age=30).values('first_name')`
+- 나이가 30 이상인 사람들의 이름과 나이 조회: `User.objects.filter(age__gte=30).values('first_name', 'age')`
+- 나이가 30이상이고 잔고가 50만원 초과인 사람의 이름, 나이, 계좌잔고 조회:`User.objects.filter(age__gte=30, balance_gt=500000).values(’first_name’,’age’,’balance’)`
+- 이름에 ‘호’가 포함된 사람의 이름과 성 조회: `User.objects.filter(first_name__contains='호').values('first_name','last_name')`
+- 핸드폰 번호가 011로 시작하는 사람들의 이름과 핸드폰 번호 조회: `User.objects.filter(phone__startswith='011-').values('first_name','phone')`
+- 이름이 준으로 끝나는 사람들의 이름 조회: `User.objects.filter(first_name__endswith='준').values('first_name')`
+- 경기도 혹은 강원도에 사는 사람들의 이름과 지역 조회: `User.objects.filter(country__in=['강원도','경기도']).values('first_name','country')`
+- 경기도 혹은 강원도에 살지 않는 사람들의 이름, 지역 조회: `User.objects.exclude(country__in=['강원도','경기도']).values('first_name', 'country')`
+- 나이가 가장 어린 10명의 이름과 나이 조회: `User.objects.order_by('age').values('first_name','age')[:10]`
+- 나이가 30 이거나 성이 김씨인 사람들 조회: `User.objects.filter(Q(age=30) | Q(last_name='김')).values('last_name')`
+
+`values()` 
+
+- 모델 인스턴스가 아닌 딕셔너리 요소를 가진 QuerySet을 반환한다.
+
+`Field lookups`
+
+필드 뒤쪽에 언더바2개(__) 붙이고 쓸 수 있음
+
+- gte : 이상
+
+`QuerySet  API로 OR 사용하기`
+
+방법
+
+1. `from django.db.models import Q`
+2. q객체사용 해서 조합 (or → | )
+
+## Aggregation
+
+---
+
+- 전체 queryset에 대한 값 계산
+- 평균 , 합계, 최소 와 같은 값
+- 집계 함수를 import 해서 사용
+    
+    ```python
+    from django.db.models import Avg, Max, Sum, Count
+    ```
+    
+
+예시
+
+- 나이가 30 이상인 사람들의 평균 나이:`User.objects.filter(age__gte=30).aggregate(Avg(’age’))`
+- 가장 높은 계좌 잔액 조회하기: `User.objects.aggregate(Max('balance'))`
+- 모든 계좌 잔액 총액 : `User.objects.aggregate(Sum('balance'))`
+
+결과 이름 바꾸기
+
+- `User.objects.filter(age__gte=30).aggregate(Avg(’age’))` → `{'age__avg' : 36.20}`
+- `User.objects.filter(age__gte=30).aggregate(ssafy = Avg(’age’))` → `{'ssafy' : 36.20}`
+
+Grouping data
+
+- `annotate()` 사용
+- 예시
+    - 각 지역별로 몇명씩 살고 있는지 조회: `User.objects.values('contry').annotate(Count('country'))`
+    - 각 지역별로 몇명씩 살고 있는지 + 지역별 계좌 잔액 평균: `User.objects.values('contry').annotate(Count('country'), avg_balance=Avg('balance'))`
+    - 각 성씨가 몇명씩 있는지: `User.objects.values('last_name').annotate(Count('last_name'))`
