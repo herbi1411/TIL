@@ -35,3 +35,4 @@
 ## 🎡 22.10
 - 10.04 [\(DB\)](DB/SQL.MD)
 - 10.11 [\(Django\)](./Django/README.md) [\(DB\)](Django/DJANGODB.md)
+- 10.12 [\(DB\)](Django/DJANGODB.md)
