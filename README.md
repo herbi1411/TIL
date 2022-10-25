@@ -37,3 +37,4 @@
 - 10.11 [\(Django\)](./Django/README.md) [\(DB\)](Django/DJANGODB.md)
 - 10.12 [\(DB\)](Django/DJANGODB.md)
 - 10.19 [\(Javascript\)](Javascript/README.md)
+- 10.24 [\(Javascript\)](Javascript/README.md)
