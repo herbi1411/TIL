@@ -38,3 +38,4 @@
 - 10.12 [\(DB\)](Django/DJANGODB.md)
 - 10.19 [\(Javascript\)](Javascript/README.md)
 - 10.24 [\(Javascript\)](Javascript/README.md)
+- 10.28 [\(Git Advanced\)](Git\GIT_ADVANCED.md)
