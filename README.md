@@ -39,3 +39,4 @@
 - 10.19 [\(Javascript\)](Javascript/README.md)
 - 10.24 [\(Javascript\)](Javascript/README.md)
 - 10.28 [\(Git Advanced\)](Git\GIT_ADVANCED.md)
+- 10.31 [\(Vue\)](Vue/README.md)
