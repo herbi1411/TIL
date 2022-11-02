@@ -543,3 +543,353 @@ html에 message 설정 추가
       </script>
     </body>
     ```
+    ## Vue CLI 설치
+
+---
+
+****`npm install -g @vue/cli`****
+
+## Vue 프로젝트 생성
+
+---
+
+`npm create vue-cli`
+
+⇒ git bash에서는 interactive(대화형) shell을 지원하지 않으므로 vscode에서 실행하기
+
+## vue 프로젝트 실행
+
+---
+
+`npm run serve`
+
+## Babel
+
+---
+
+- ES6+ 코드를 구버전으로 번역/변환 해주는 도구
+- JS의 파편화, 표준화의 영향으로 작성된 코드의 스펙트럼이 매우 다양함
+
+## Webpack
+
+---
+
+- static module bundler
+- 모듈간의 의존성 문제를 해결하기 위한 도구
+- 프로젝트에 필요한 모든 모듈을 매핑하고, 내부적으로 종속성 그래프를 빌드함
+- 즉 번들러 중 하나
+    - 다른 번들러 : snowpack, parcel, rollup.js
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8f1950f9-7643-4ec2-9fef-605c07ff75aa/Untitled.png)
+
+## Node modules의 의존성
+
+---
+
+- 2016년 left-pad 사태 (라이브러리 하나 없어졌더니 웹 서버 상당수가 다운)
+- package.json에 설치된 node 모듈들이 나열 돼있고
+- package-lock.json에 모듈들 간의 의존성 정보가 나타나있음
+
+## Component
+
+---
+
+- UI를 독립적이고 재사용 가능한 조각들로 나누는 것
+    - 즉, 기능별로 분화한 코드 조각
+- CS에서는 다시 사용할 수 있는 범용성을 위해 개발된 소프트웨어 구성 요소를 의미
+- 하나의 app을 구성할 때 중첩된 컴포넌트들의 tree로 구성하는 것이 보편적임
+- 유지보수가 쉬워지고 재사용성이 높아진다.
+
+## SFC
+
+---
+
+- Single File Component
+- `.vue` 파일 하나를 하나의 컴포넌트로 처리
+
+## Vue Component 구조
+
+---
+
+1. 템플릿
+    - HTML의 Body 부분
+    - 눈으로 보여지는 요소 작성
+    - 다른 컴포넌트를 HTML 요소처럼 추가 가능
+2. 스크립트
+    - Javascript 코드가 작성되는 곳
+    - 컴포넌트 정보, 데이터, 메서드 등 vue 인스턴스를 구성하는 대부분이 작성 됨
+3. 스타일
+    - CSS가 작성되며 컴포넌트의 스타일을 담당
+
+※ 이렇게 컴포넌트들이 tree 구조를 이루어 하나의 페이지를 만들게 됨. 즉, index.html 파일 하나만을 rendering
+
+## Vue Component 네이밍 규칙
+
+---
+
+`Pascal Case` : 단어별 첫글자대문자로 (ex. MyComponent)
+
+## Vue Template 작성 규칙
+
+---
+
+- Template 안에 하나의 태그만 작성가능(ex. div)
+    
+    ```html
+    <template>
+      <div>
+        <h1>이거는 내가 만든 새로운 컴포넌트다!</h1>
+      </div>
+    </template>
+    ```
+    
+
+## Component 등록 3단계
+
+---
+
+- 불러오기
+    
+    ```
+    // 1. 불러오기
+    import MyComponent from './components/MyComponent.vue'
+    import MyComponent from '@/components/MyComponent'
+    // @ : 절대경로(src) , .vue는 생략 가능
+    ```
+    
+- 등록하기
+    
+    ```jsx
+    export default {
+      name: 'App',
+      components: {
+        HelloWorld,
+        //2. 등록하기
+        MyComponent,
+      }
+    }
+    ```
+    
+- 보여주기
+    
+    ```html
+    <template>
+      <div id="app">
+        <img alt="Vue logo" src="./assets/logo.png">
+        <HelloWorld msg="Welcome to Your Vue.js App"/>
+        <!-- 보여주기 -->
+        <MyComponent/>
+      </div>
+    </template>
+    ```
+    
+
+## Vue에서 컴포넌트 사용할 때 에러
+
+---
+
+- 컴포넌트를 impor하고 사용하지 않으면 에러남
+
+## Vue2 한글 docs
+
+---
+
+[Vue.js](https://vue2.hphk.io/)
+
+## Data in Components
+
+---
+
+- 컴포넌트는 부모-자식 관계에서만 데이터를 주고받음
+- 부모 ⇒ 자식으로의 데이터 흐름: pass props
+- 자식 ⇒ 부모: emit event
+
+## Pass Props
+
+---
+
+- `props` : 부모 컴포넌트의 정보를 전달하기 위한 사용자 지정 특성
+- 자식 컴포넌트는 props 옵션을 사용하여 수신하는 props를 명시적으로 선언해야 함
+- 정적인 데이터를 전달하는 경우 static props 라고 명시하기도 함
+- 속성의 이름은 html쪽은 `kebab-case` , js쪽은 `CamelCase`를  사용해야함 (😒)
+
+```jsx
+// MyComponent.vue
+<template>
+  <div class="border">
+    <h1>이거는 내가 만든 새로운 컴포넌트다!</h1>
+    <MyComponentItem static-props="MyComponent에서 보낸 DATA"/>
+  </div>
+</template>
+
+<script>
+import MyComponentItem from '@/components/MyComponentItem'
+export default {
+    name: 'MyComponent',
+    components: {
+      MyComponentItem
+    }
+}
+</script>
+
+<style>
+  .border {
+    border : solid;
+  }
+</style>
+```
+
+```jsx
+// MyComponentItem.vue
+<template>
+  <div>
+    <h3>나는 MyComponent의 하위 컴포넌트</h3>
+    <p>{{ StaticProps }}</p>
+  </div>
+</template>
+
+<script>
+export default {
+    name: 'MyComponentItem',
+    props: {
+        StaticProps: String,
+    }
+}
+</script>
+
+<style>
+
+</style>
+```
+
+## 동적 props
+
+---
+
+- vind를 통해서 js 객체를 전달할 수 있음
+- `:` 를 사용해 바인딩 가능
+
+## CLI에서의 data
+
+---
+
+- 함수의 return 형태로 data를 연결해야함
+
+```
+export default {
+  name: "MyComponent",
+  components: {
+    MyComponentItem,
+  },
+  data: function () {
+    return {
+      
+    }  
+  }
+};
+```
+
+이유 : 각 Vue 인스턴스가 data 객체를 공유하므로
+
+## 단방향 데이터 흐름
+
+---
+
+- 모든 props는 부모에서 자식으로, 단방향 바인딩을 형성
+- 부모 속성이 업데이트되면 자식으로 흐르지만 반대방향은 아님
+- 부모 컴포넌트가 업데이트 될 때마다 자식 컴포넌트의 모든 prop이 최신값으로 새로고침 됨
+
+이유 : 하위 컴포넌트가 실수로 상위 컴포넌트 상태를 변경하여 앱의 데이터 흐름을 이해하기 힘들게 만드는 것을 방지
+
+ 
+
+## Emit Event
+
+---
+
+- 자식 컴포넌트에서 부모 컴포넌트로 데이터를 전달할 때는 이벤트를 발생시킴
+    1. 데이터를 이벤트 리스너의 콜백함수의 인자로 전달
+    2. 상위 컴포넌트는 해당 이벤트를 통해 데이터를 받음
+- emit은 한 단계 위의 부모에게만 할 수 있음. 그 이상으로 가려면 함수를 계속 선언해서 전파시켜 줘야 함
+
+```jsx
+//MyComponentItem.vue
+<template>
+  <div>
+    <h3>나는 MyComponent의 하위 컴포넌트</h3>
+    <p>{{ staticProps }}</p>
+    <p>{{ dynamicProps }}</p>
+    <button @click="childToParent">클릭!</button>
+  </div>
+</template>
+
+<script>
+export default {
+    name: 'MyComponentItem',
+    props: {
+        staticProps: String,
+        dynamicProps : String,
+    },
+    methods: {
+      childToParent: function() {
+        this.$emit('child-to-parent', "나는 자식이 보낸 데이터다.")
+      }  
+    },
+}
+</script>
+
+<style>
+
+</style>
+```
+
+```jsx
+//MyComponent.vue
+<template>
+  <div class="border">
+    <h1>이거는 내가 만든 새로운 컴포넌트다!</h1>
+    <MyComponentItem static-props="MyComponent에서 보낸 DATA" 
+    :dynamic-props="dynamicProps"
+    @child-to-parent="parentGetEvnet"/>
+  </div>
+</template>
+
+<script>
+import MyComponentItem from "@/components/MyComponentItem";
+export default {
+  name: "MyComponent",
+  components: {
+    MyComponentItem,
+  },
+  data: function () {
+    return {
+      dynamicProps: "이건 동적인 데이터",
+    }
+    
+  },
+  methods: {
+    parentGetEvnet : function (childData) {
+      this.dynamicProps = childData
+      console.log(childData)
+    }
+  }
+};
+</script>
+
+<style>
+.border {
+  border: solid;
+}
+</style>
+```
+
+## Array.splice 메서드
+
+---
+
+배열에서 특정 인덱스에서 N개만큼 데이터를 지우고 다시 배열을 반환해줌
+
+```
+const index = this.todos.indexOf(todo)
+this.todos.splice(index, 1)
+```

@@ -40,3 +40,6 @@
 - 10.24 [\(Javascript\)](Javascript/README.md)
 - 10.28 [\(Git Advanced\)](Git\GIT_ADVANCED.md)
 - 10.31 [\(Vue\)](Vue/README.md)
+
+## 🧵 22.11 
+- 11.02 [\(Vue\)](Vue/README.md)
